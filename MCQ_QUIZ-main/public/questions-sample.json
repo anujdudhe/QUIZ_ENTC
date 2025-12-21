@@ -1,0 +1,46 @@
+  [
+    {
+    "id": 1,
+    "question": "Which of the following is NOT a basis for classifying internal combustion (IC) engines?",
+    "options": [
+      "Type of fuel used",
+      "Number of wheels",
+      "Method of ignition",
+      "Number of strokes"
+    ],
+    "answerIndex": 1
+  },
+  {
+    "id": 2,
+    "question": "A diesel engine is also called a:",
+    "options": [
+      "Spark ignition engine",
+      "Compression ignition engine",
+      "External combustion engine",
+      "Rotary engine"
+    ],
+    "answerIndex": 1
+  },
+  {
+    "id": 3,
+    "question": "Two-stroke engines are generally preferred in:",
+    "options": [
+      "Trucks",
+      "Cars",
+      "Motorcycles",
+      "Trains"
+    ],
+    "answerIndex": 2
+  },
+  {
+    "id": 4,
+    "question": "The main function of the piston is to:",
+    "options": [
+      "Store lubricating oil",
+      "Seal the combustion chamber and transmit force",
+      "Cool the engine",
+      "Mix air and fuel"
+    ],
+    "answerIndex": 1
+  }
+]
