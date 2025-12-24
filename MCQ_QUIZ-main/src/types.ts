@@ -29,12 +29,17 @@ export interface Chapter {
 export interface ExamResults {
   totalQuestions: number;
   correctAnswers: number;
+  wrongAnswers: number;
   score: number;
   chapter: string;
+  percentage: number;
+  completedAt: number;
 }
 
 export type AppState = 
-  | { stage: 'chapterSelect' }
+  | { 
+      stage: 'chapterSelect';
+    }
   | { 
       stage: 'exam'; 
       chapter: string; 

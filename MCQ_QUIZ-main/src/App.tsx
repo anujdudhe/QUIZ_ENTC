@@ -129,12 +129,18 @@ function App() {
     // Only move to results if it's the last question and user clicks next
     const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
     if (isLastQuestion) {
+      const correctAnswers = [...userAnswers, answer].filter(a => a.isCorrect).length;
+      const totalQuestions = filteredQuestions.length;
       const results: ExamResults = {
-        totalQuestions: filteredQuestions.length,
-        correctAnswers: [...userAnswers, answer].filter(a => a.isCorrect).length,
-        score: Math.round(([...userAnswers, answer].filter(a => a.isCorrect).length / filteredQuestions.length) * 100),
+        totalQuestions,
+        correctAnswers,
+        wrongAnswers: totalQuestions - correctAnswers,
+        score: Math.round((correctAnswers / totalQuestions) * 100),
         chapter: appState.chapter,
+        percentage: Math.round((correctAnswers / totalQuestions) * 100),
+        completedAt: Date.now()
       };
+      setAppState({ stage: 'result', results });
       // Don't automatically show results, wait for next click
     }
   };
@@ -162,11 +168,16 @@ function App() {
 
     // Move to next question or show results if it's the last question
     if (isLastQuestion) {
+      const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
+      const totalQuestions = filteredQuestions.length;
       const results: ExamResults = {
-        totalQuestions: filteredQuestions.length,
-        correctAnswers: userAnswers.filter(a => a.isCorrect).length,
-        score: Math.round((userAnswers.filter(a => a.isCorrect).length / filteredQuestions.length) * 100),
+        totalQuestions,
+        correctAnswers,
+        wrongAnswers: totalQuestions - correctAnswers,
+        score: Math.round((correctAnswers / totalQuestions) * 100),
         chapter: appState.chapter,
+        percentage: Math.round((correctAnswers / totalQuestions) * 100),
+        completedAt: Date.now()
       };
       setAppState({ 
         stage: 'result', 
@@ -196,22 +207,9 @@ function App() {
     const nextIndex = appState.currentQuestionIndex + 1;
     
     if (nextIndex < filteredQuestions.length) {
-      // Move to next question
-      setAppState(prev => ({
-        ...prev,
+      setAppState({
+        ...appState,
         currentQuestionIndex: nextIndex
-      }));
-    } else {
-      // Show results when on last question and user clicks next
-      const results: ExamResults = {
-        totalQuestions: filteredQuestions.length,
-        correctAnswers: userAnswers.filter(a => a.isCorrect).length,
-        score: Math.round((userAnswers.filter(a => a.isCorrect).length / filteredQuestions.length) * 100),
-        chapter: appState.chapter,
-      };
-      setAppState({ 
-        stage: 'result', 
-        results 
       });
     }
   };
@@ -223,8 +221,20 @@ function App() {
   const confirmQuit = () => {
     setShowQuitModal(false);
     if (appState.stage === 'exam') {
-      const examState = appState as any;
-      setAppState({ stage: 'result', chapter: examState.chapter });
+      const examState = appState;
+      const filteredQuestions = questions.filter(q => q.chapter === examState.chapter);
+      const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
+      const totalQuestions = filteredQuestions.length;
+      const results: ExamResults = {
+        totalQuestions,
+        correctAnswers,
+        wrongAnswers: totalQuestions - correctAnswers,
+        score: Math.round((correctAnswers / totalQuestions) * 100),
+        chapter: examState.chapter,
+        percentage: Math.round((correctAnswers / totalQuestions) * 100),
+        completedAt: Date.now()
+      };
+      setAppState({ stage: 'result', results });
     }
   };
 
@@ -241,11 +251,6 @@ function App() {
     setAppState({ stage: 'chapterSelect' });
   };
 
-  const handleNavigateToQuestion = (index: number) => {
-    if (appState.stage !== 'exam') return;
-    setAppState({ stage: 'exam', chapter: (appState as any).chapter, currentQuestionIndex: index });
-  };
-
   const getFilteredQuestions = (): Question[] => {
     if (appState.stage === 'chapterSelect') return [];
     if (appState.stage !== 'exam' && appState.stage !== 'result') return [];
@@ -259,17 +264,18 @@ function App() {
 
   const getResults = (): ExamResults => {
     const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
-    const wrongAnswers = userAnswers.filter(a => !a.isCorrect).length;
     const totalQuestions = userAnswers.length;
-    const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 
     return {
       totalQuestions,
       correctAnswers,
       wrongAnswers,
+      score: percentage,
+      chapter: appState.stage === 'exam' ? (appState as any).chapter : '',
       percentage,
-      answers: userAnswers,
-      completedAt: new Date().toISOString(),
+      completedAt: Date.now()
     };
   };
 
