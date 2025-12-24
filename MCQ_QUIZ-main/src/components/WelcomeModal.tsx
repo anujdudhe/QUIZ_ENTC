@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 
 interface WelcomeModalProps {
@@ -8,22 +8,49 @@ interface WelcomeModalProps {
 export const WelcomeModal = ({ onStart }: WelcomeModalProps) => {
   const [show, setShow] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const { showNotification } = useNotifications();
 
   useEffect(() => {
-    // Show modal every time the component mounts
     setShow(true);
-    // Small delay for animation
-    setTimeout(() => setIsVisible(true), 50);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  const handleStart = useCallback(async () => {
+    setIsVisible(false);
+    setIsClosing(true);
+    
+    try {
+      await showNotification('Welcome to ENTC MCQ Practice!', {
+        body: 'Get ready to test your knowledge!',
+        icon: '/logo192.png'
+      });
+    } catch (error) {
+      console.error('Failed to show notification:', error);
+    }
+
+    // Wait for the close animation to complete
+    setTimeout(() => {
+      setShow(false);
+      onStart();
+    }, 300);
+  }, [onStart, showNotification]);
 
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div 
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${isClosing ? 'bg-black/0' : 'bg-black/90'}`}
+      onClick={(e) => e.target === e.currentTarget && handleStart()}
+    >
       <div
-        className={`bg-white rounded-2xl max-w-md w-full mx-4 transform transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
+        className={`bg-white dark:bg-gray-100 rounded-2xl max-w-md w-full mx-4 transform transition-all duration-300 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        } ${isClosing ? 'opacity-0 -translate-y-4' : ''}`}
       >
         <div className="p-6 sm:p-8">
           <div className="text-center mb-6">
@@ -87,19 +114,8 @@ export const WelcomeModal = ({ onStart }: WelcomeModalProps) => {
           </div>
 
           <button
-            onClick={async () => {
-              setIsVisible(false);
-              // Show welcome notification
-              await showNotification('Welcome to ENTC MCQ Practice!', {
-                body: 'Get ready to test your knowledge!',
-                icon: '/logo192.png'
-              });
-              setTimeout(() => {
-                setShow(false);
-                onStart();
-              }, 300);
-            }}
-            className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={handleStart}
+            className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-700 dark:hover:bg-blue-600 dark:focus:ring-blue-600"
           >
             Start Practicing
           </button>
