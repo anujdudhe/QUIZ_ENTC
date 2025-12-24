@@ -7,6 +7,7 @@ import { ProgressBar } from './components/ProgressBar';
 import { Result } from './components/Result';
 import { ConfirmQuit } from './components/ConfirmQuit';
 import { QuestionStatusGrid } from './components/QuestionStatusGrid';
+import { WelcomeModal } from './components/WelcomeModal';
 
 /**
  * Main App Component
@@ -21,6 +22,7 @@ function App() {
   const [showQuitModal, setShowQuitModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Load questions from data files
   useEffect(() => {
@@ -304,7 +306,8 @@ function App() {
   const filteredQuestions = getFilteredQuestions();
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      {showWelcome && <WelcomeModal onStart={() => setShowWelcome(false)} />}
 
       <a 
         href="#main-content" 

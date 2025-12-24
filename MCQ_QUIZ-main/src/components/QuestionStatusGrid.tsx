@@ -23,64 +23,64 @@ export const QuestionStatusGrid = ({
 
     // Current question gets a blue ring
     if (isCurrentQuestion) {
-      return 'ring-4 ring-blue-400';
+      return 'bg-gradient-to-br from-blue-400 to-blue-600 text-white ring-2 ring-blue-300';
     }
 
     // Check if question was skipped
     if (state.status === 'skipped') {
-      return 'bg-yellow-400';
+      return 'bg-gradient-to-br from-amber-400 to-amber-500 text-white';
     }
 
     // Check answer status
     if (state.status === 'answered' && userAnswer) {
-      return userAnswer.isCorrect ? 'bg-green-500' : 'bg-red-500';
+      return userAnswer.isCorrect 
+        ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' 
+        : 'bg-gradient-to-br from-rose-500 to-rose-600 text-white';
     } else if (state.status === 'marked') {
-      return 'bg-purple-500';
+      return 'bg-gradient-to-br from-violet-500 to-violet-600 text-white';
     } else {
       // Unanswered
-      return 'bg-gray-300';
+      return 'bg-gray-200 text-gray-700 hover:bg-gray-300';
     }
   };
 
   // Rest of the component remains the same...
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">Question Navigator</h3>
+    <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl p-5 mb-6 border border-gray-200/50">
+      <h3 className="text-base font-semibold text-slate-800 mb-4">Question Navigator</h3>
       
       {/* Legend */}
-      <div className="flex flex-wrap gap-3 mb-3 text-xs">
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 bg-green-500 rounded"></div>
-          <span className="text-gray-600">Correct</span>
+      <div className="flex flex-wrap gap-4 mb-4 text-xs">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-gradient-to-br from-emerald-400 to-emerald-600"></div>
+          <span className="text-slate-700">Correct</span>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 bg-red-500 rounded"></div>
-          <span className="text-gray-600">Wrong</span>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-gradient-to-br from-rose-500 to-rose-600"></div>
+          <span className="text-slate-700">Wrong</span>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 bg-yellow-400 rounded"></div>
-          <span className="text-gray-600">Skipped</span>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-gradient-to-br from-amber-400 to-amber-500"></div>
+          <span className="text-slate-700">Skipped</span>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-4 h-4 bg-gray-300 rounded"></div>
-          <span className="text-gray-600">Unanswered</span>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-gray-200"></div>
+          <span className="text-slate-700">Unanswered</span>
         </div>
-       
       </div>
 
       {/* Question Grid */}
-      <div className="grid grid-cols-10 sm:grid-cols-15 md:grid-cols-20 gap-2 max-h-64 overflow-y-auto">
+      <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-2 max-h-80 overflow-y-auto p-1">
         {questionStates.map((state, index) => (
           <button
             key={state.questionId}
             onClick={() => onNavigateToQuestion(index)}
             className={`
-              w-8 h-8 sm:w-9 sm:h-9 rounded font-semibold text-xs sm:text-sm
+              w-9 h-9 sm:w-10 sm:h-10 rounded-lg font-medium text-sm sm:text-base
               transition-all duration-200 flex items-center justify-center
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-              text-gray-700
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
+              shadow-sm hover:shadow-md hover:-translate-y-0.5
               ${getStatusColor(state, index)}
-              ${index === currentQuestionIndex ? 'ring-2 ring-blue-400' : ''}
             `}
             aria-label={`Go to question ${index + 1}, status: ${state.status}`}
             title={`Question ${index + 1} - ${state.status}`}
@@ -91,7 +91,7 @@ export const QuestionStatusGrid = ({
       </div>
 
       {/* Summary Stats */}
-      <div className="mt-3 pt-3 border-t border-gray-200 flex flex-wrap gap-3 text-xs text-gray-600">
+      <div className="mt-4 pt-3 border-t border-gray-200/50 flex flex-wrap gap-4 text-sm text-slate-700">
         <span>
           <strong>Total:</strong> {questionStates.length}
         </span>

@@ -1,7 +1,8 @@
 .chapter-selector-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
+  /* Softer, modern gradient */
+  background: radial-gradient(circle at top left, #4f46e5 0%, #1e293b 45%, #020617 100%);
+  padding: 56px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +12,7 @@
 .chapter-header {
   text-align: center;
   color: white;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .chapter-header h1 {
@@ -28,21 +29,21 @@
 
 .chapters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
   width: 100%;
 }
 
 .chapter-card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 16px;
+  padding: 24px 20px;
   cursor: pointer;
-  border: none;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  text-align: left;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
   position: relative;
   overflow: hidden;
 }
@@ -63,21 +64,22 @@
 }
 
 .chapter-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.35);
+  border-color: #4f46e5;
 }
 
 .chapter-number {
-  font-size: 1.8em;
-  font-weight: bold;
-  color: #667eea;
-  margin-bottom: 15px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 6px;
 }
 
 .chapter-description {
-  color: #666;
-  font-size: 0.95em;
-  margin: 15px 0;
+  color: #4b5563;
+  font-size: 0.92rem;
+  margin: 10px 0 0;
   min-height: 40px;
 }
 
