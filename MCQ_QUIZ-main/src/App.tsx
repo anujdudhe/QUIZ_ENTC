@@ -29,34 +29,34 @@ function App() {
     try {
       // Import questions from our data files
       const data = allQuestions;
-      
+
       // Validate questions
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error('No questions found');
       }
-      
+
       setQuestions(data);
-      
+
       // Extract unique chapters and count questions
       const chapterMap = new Map<string, number>();
       data.forEach(q => {
         chapterMap.set(q.chapter, (chapterMap.get(q.chapter) || 0) + 1);
       });
-      
+
       const extractedChapters: Chapter[] = Array.from(chapterMap.entries()).map(([name]) => ({
         id: name,
         name,
         description: `${chapterMap.get(name)} questions`,
       }));
-      
+
       setChapters(extractedChapters);
-      
+
       // Initialize question states
       const initialStates: QuestionState[] = data.map(q => ({
         questionId: q.id,
         status: 'unanswered' as const,
       }));
-      
+
       setQuestionStates(initialStates);
       console.log('Loaded chapters:', extractedChapters);
       console.log('Loaded questions:', data);
@@ -69,33 +69,33 @@ function App() {
 
   const handleSelectChapter = (chapterId: string) => {
     console.log('Selected chapter:', chapterId);
-    
+
     // Filter questions for the selected chapter
     const chapterQuestions = questions.filter(q => q.chapter === chapterId);
-    
+
     if (chapterQuestions.length === 0) {
       // If no questions found for the chapter, show an alert
       alert(`No questions found for ${chapterId}. Please try another chapter.`);
       return;
     }
-    
+
     // Reset user answers and question states for the new quiz
     setUserAnswers([]);
-    
+
     // Initialize question states for the selected chapter
     const initialQuestionStates = questions.map(q => ({
       questionId: q.id,
       status: q.chapter === chapterId ? 'unanswered' as const : 'unanswered' as const
     }));
-    
+
     setQuestionStates(initialQuestionStates);
-    
+
     // If questions exist, proceed to the exam
     console.log(`Found ${chapterQuestions.length} questions for ${chapterId}`);
-    setAppState({ 
-      stage: 'exam', 
-      chapter: chapterId, 
-      currentQuestionIndex: 0 
+    setAppState({
+      stage: 'exam',
+      chapter: chapterId,
+      currentQuestionIndex: 0
     });
   };
 
@@ -113,7 +113,7 @@ function App() {
 
     // Update answers and question state
     setUserAnswers(prev => [...prev, answer]);
-    
+
     setQuestionStates(prev => {
       const updated = [...prev];
       const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
@@ -149,46 +149,14 @@ function App() {
     if (appState.stage !== 'exam') return;
 
     const filteredQuestions = questions.filter(q => q.chapter === appState.chapter);
-    const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
-    const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
+    const nextIndex = appState.currentQuestionIndex + 1;
 
-    // Update question state to mark as skipped
-    setQuestionStates(prev => {
-      const updated = [...prev];
-      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
-      if (questionIndex !== -1) {
-        updated[questionIndex] = {
-          questionId: currentQuestion.id,
-          status: 'skipped',
-          isMarked: updated[questionIndex]?.isMarked || false,
-        };
-      }
-      return updated;
-    });
-
-    // Move to next question or show results if it's the last question
-    if (isLastQuestion) {
-      const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
-      const totalQuestions = filteredQuestions.length;
-      const results: ExamResults = {
-        totalQuestions,
-        correctAnswers,
-        wrongAnswers: totalQuestions - correctAnswers,
-        score: Math.round((correctAnswers / totalQuestions) * 100),
-        chapter: appState.chapter,
-        percentage: Math.round((correctAnswers / totalQuestions) * 100),
-        completedAt: Date.now()
-      };
-      setAppState({ 
-        stage: 'result', 
-        results 
-      });
-    } else {
+    if (nextIndex < filteredQuestions.length) {
       // Move to next question
-      setAppState(prev => ({
-        ...prev,
-        currentQuestionIndex: prev.currentQuestionIndex + 1
-      }));
+      setAppState({
+        ...appState,
+        currentQuestionIndex: nextIndex
+      });
     }
   };
 
@@ -199,13 +167,12 @@ function App() {
       currentQuestionIndex: appState.currentQuestionIndex - 1
     });
   };
-
   const handleNext = () => {
     if (appState.stage !== 'exam') return;
-    
+
     const filteredQuestions = questions.filter(q => q.chapter === appState.chapter);
     const nextIndex = appState.currentQuestionIndex + 1;
-    
+
     if (nextIndex < filteredQuestions.length) {
       setAppState({
         ...appState,
@@ -310,13 +277,13 @@ function App() {
   const correctCount = userAnswers.filter(a => a.isCorrect).length;
   const wrongCount = userAnswers.filter(a => !a.isCorrect).length;
   const filteredQuestions = getFilteredQuestions();
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {showWelcome && <WelcomeModal onStart={() => setShowWelcome(false)} />}
 
-      <a 
-        href="#main-content" 
+      <a
+        href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-lg z-50"
       >
         Skip to main content
