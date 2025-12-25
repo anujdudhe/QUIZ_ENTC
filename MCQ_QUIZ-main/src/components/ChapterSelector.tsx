@@ -10,7 +10,7 @@ interface ChapterSelectorProps {
 // Short unit titles shown on the chapter cards
 const UNIT_TITLES: Record<string, string> = {
   'UNIT 1': 'Microcontroller Fundamentals',
-  'UNIT 2': 'Unit 2 Title',
+  'UNIT 2': 'Embedded Systems and Advance Microcontrollers',
   'UNIT 3': 'Unit 3 Title',
   'UNIT 4': 'Unit 4 Title',
   'UNIT 5': 'Unit 5 Title',
@@ -19,10 +19,10 @@ const UNIT_TITLES: Record<string, string> = {
 // Unit descriptions to be shown in the modal
 const UNIT_DESCRIPTIONS: Record<string, string> = {
   'UNIT 1': 'Unit 1 introduces the basics of microcomputers and microcontrollers, their architecture, differences, and the role of the 8051 microcontroller in embedded systems.',
-  'UNIT 2': 'Dive deeper into React hooks, state management, and component lifecycle methods.',
-  'UNIT 3': 'Advanced React patterns, context API, and performance optimization techniques.',
-  'UNIT 4': 'State management solutions including Redux and React Query for complex applications.',
-  'UNIT 5': 'Advanced topics like server-side rendering, testing, and deployment strategies.'
+  'UNIT 2': 'UNIT 2 introduces embedded systems and advanced microcontrollers, focusing on their architecture, components, and applications.',
+  'UNIT 3': 'UNIT 3 focuses on Arduino as an open-source development board, covering Arduino basics, types of boards, and programming using the Arduino IDE. ',
+  'UNIT 4': 'UNIT 4 focuses on interfacing basic electronic components with Arduino, including LEDs, switches, relays, seven-segment displays, and 16×2 LCDs.',
+  'UNIT 5': 'UNIT 5 introduces the Internet of Things (IoT), covering IoT architecture, components, and communication modules.'
 };
 
 export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorProps) => {
