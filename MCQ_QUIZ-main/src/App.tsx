@@ -149,6 +149,21 @@ function App() {
     if (appState.stage !== 'exam') return;
 
     const filteredQuestions = questions.filter(q => q.chapter === appState.chapter);
+    const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
+    
+    // Mark the current question as skipped
+    setQuestionStates(prev => {
+      const updated = [...prev];
+      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
+      if (questionIndex !== -1) {
+        updated[questionIndex] = {
+          ...updated[questionIndex],
+          status: 'skipped' as const,
+        };
+      }
+      return updated;
+    });
+
     const nextIndex = appState.currentQuestionIndex + 1;
 
     if (nextIndex < filteredQuestions.length) {

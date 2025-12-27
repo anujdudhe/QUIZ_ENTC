@@ -1,6 +1,8 @@
 # QUIZ ENTC – MCQ Exam App
 
-A single-page multiple-choice exam application built with **React**, **TypeScript**, and **Vite**, designed for ENTC (Electronics & Telecommunication) students. The app lets students practice unit-wise MCQ questions (e.g. 8051 microcontroller and related topics) with a clean UI, keyboard navigation, and detailed feedback.
+A single-page multiple-choice exam application built with **React**, **TypeScript**, and **Vite**, designed for ENTC (Electronics & Telecommunication) students. The app lets students practice unit-wise MCQ questions (e.g. 8051 microcontroller and related topics) with a clea
+  **Live Demo**: [https://entc-quiz.nn UI, keyboard navigation, and detailed feedback.
+etlify.app](https://entc-quiz.netlify.app)
 
 ---
 

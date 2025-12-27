@@ -11,9 +11,9 @@ interface ChapterSelectorProps {
 const UNIT_TITLES: Record<string, string> = {
   'UNIT 1': 'Microcontroller Fundamentals',
   'UNIT 2': 'Embedded Systems and Advance Microcontrollers',
-  'UNIT 3': 'Unit 3 Title',
-  'UNIT 4': 'Unit 4 Title',
-  'UNIT 5': 'Unit 5 Title',
+  'UNIT 3': 'Introduction to Arduino',
+  'UNIT 4': 'Interfacing of Input and Output Devices with Arduino',
+  'UNIT 5': 'Introduction to Internet of Things – IOT',
 };
 
 // Unit descriptions to be shown in the modal
