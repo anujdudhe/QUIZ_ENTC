@@ -49,7 +49,7 @@ export const AdminDashboard = () => {
   // Simple password check (in production, use more secure authentication)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const ADMIN_PASSWORD = 'admin123'; // Change this to a secure password
+  const ADMIN_PASSWORD = 'Carino16'; // Change this to a secure password
 
   // Advanced analytics processing function
   const processAnalytics = (visitsData: VisitData[], eventsData: QuizEventData[]) => {

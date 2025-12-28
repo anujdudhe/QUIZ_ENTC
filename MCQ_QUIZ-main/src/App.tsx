@@ -447,8 +447,8 @@ function App() {
         </>
       )}
       
-      {/* Floating Admin Button - Always visible when not in admin mode */}
-      {!showAdmin && (
+      {/* Floating Admin Button - Only visible on chapter selector */}
+      {!showAdmin && appState.stage === 'chapterSelect' && (
         <button
           onClick={() => setShowAdmin(true)}
           className="fixed bottom-6 right-6 w-12 h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 z-50"
