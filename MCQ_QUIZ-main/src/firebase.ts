@@ -1,14 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection } from 'firebase/firestore';
 
-// Your Firebase configuration - Replace with your actual config
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBszM1xZWmnQwoMP2HNAKUuZlChNukiO9I",
+  authDomain: "quiz-app-1970f.firebaseapp.com",
+  projectId: "quiz-app-1970f",
+  storageBucket: "quiz-app-1970f.firebasestorage.app",
+  messagingSenderId: "137440929946",
+  appId: "1:137440929946:web:9c5d1caf66843f8ca61723",
+  measurementId: "G-GN0T5SQQNY"
 };
 
 // Initialize Firebase
@@ -16,6 +17,5 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 // Analytics collection references
-export const analyticsCollection = collection(db, 'analytics');
 export const visitsCollection = collection(db, 'visits');
 export const quizEventsCollection = collection(db, 'quiz_events');
