@@ -1,4 +1,4 @@
-import { db, visitsCollection, quizEventsCollection } from '../firebase';
+import { visitsCollection, quizEventsCollection } from '../firebase';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 
 // Storage keys for localStorage

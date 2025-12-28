@@ -12,6 +12,7 @@
     "verify-questions": "node scripts/verify-questions.js"
   },
   "dependencies": {
+    "firebase": "^12.7.0",
     "framer-motion": "^12.23.26",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

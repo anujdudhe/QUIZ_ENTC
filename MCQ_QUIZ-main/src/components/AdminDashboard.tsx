@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy, limit, Timestamp, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 interface VisitData {
@@ -28,8 +28,6 @@ export const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'visits' | 'quiz' | 'insights'>('overview');
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Advanced analytics state
   const [analytics, setAnalytics] = useState({
@@ -173,7 +171,7 @@ export const AdminDashboard = () => {
           limit(50)
         );
         const visitsSnapshot = await getDocs(visitsQuery);
-        const visitsData = visitsSnapshot.docs.map(doc => doc.data() as VisitData);
+        const visitsData = visitsSnapshot.docs.map((doc: any) => doc.data() as VisitData);
         setVisits(visitsData);
 
         // Fetch quiz events data
@@ -183,7 +181,7 @@ export const AdminDashboard = () => {
           limit(100)
         );
         const eventsSnapshot = await getDocs(eventsQuery);
-        const eventsData = eventsSnapshot.docs.map(doc => doc.data() as QuizEventData);
+        const eventsData = eventsSnapshot.docs.map((doc: any) => doc.data() as QuizEventData);
         setQuizEvents(eventsData);
 
         // Process advanced analytics
@@ -256,9 +254,6 @@ export const AdminDashboard = () => {
   }
 
   // Calculate statistics (using processed analytics)
-  const totalVisits = visits.length;
-  const uniqueVisitors = analytics.totalUsers;
-  const quizStarts = quizEvents.filter(e => e.eventType === 'quiz_start').length;
   const quizCompletions = quizEvents.filter(e => e.eventType === 'quiz_complete').length;
   
   const unitStats = quizEvents
