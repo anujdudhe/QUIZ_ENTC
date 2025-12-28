@@ -8,6 +8,8 @@ import { Result } from './components/Result';
 import { ConfirmQuit } from './components/ConfirmQuit';
 import { QuestionStatusGrid } from './components/QuestionStatusGrid';
 import { WelcomeModal } from './components/WelcomeModal';
+import { AdminDashboard } from './components/AdminDashboard';
+import { initializeAnalytics, trackQuizStart, trackQuizCompletion } from './services/analytics';
 
 /**
  * Main App Component
@@ -23,6 +25,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   // Load questions from data files
   useEffect(() => {
@@ -67,6 +70,24 @@ function App() {
     }
   }, []);
 
+  // Initialize analytics on app load
+  useEffect(() => {
+    initializeAnalytics().catch(console.error);
+  }, []);
+
+  // Keyboard shortcut for admin dashboard (Ctrl+Shift+A)
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        setShowAdmin(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
   const handleSelectChapter = (chapterId: string) => {
     console.log('Selected chapter:', chapterId);
 
@@ -92,6 +113,10 @@ function App() {
 
     // If questions exist, proceed to the exam
     console.log(`Found ${chapterQuestions.length} questions for ${chapterId}`);
+    
+    // Track quiz start
+    trackQuizStart(chapterId).catch(console.error);
+    
     setAppState({
       stage: 'exam',
       chapter: chapterId,
@@ -140,6 +165,15 @@ function App() {
         percentage: Math.round((correctAnswers / totalQuestions) * 100),
         completedAt: Date.now()
       };
+      
+      // Track quiz completion
+      trackQuizCompletion(
+        appState.chapter,
+        totalQuestions,
+        correctAnswers,
+        Math.round((correctAnswers / totalQuestions) * 100)
+      ).catch(console.error);
+      
       setAppState({ stage: 'result', results });
       // Don't automatically show results, wait for next click
     }
@@ -216,6 +250,15 @@ function App() {
         percentage: Math.round((correctAnswers / totalQuestions) * 100),
         completedAt: Date.now()
       };
+      
+      // Track quiz completion
+      trackQuizCompletion(
+        examState.chapter,
+        totalQuestions,
+        correctAnswers,
+        Math.round((correctAnswers / totalQuestions) * 100)
+      ).catch(console.error);
+      
       setAppState({ stage: 'result', results });
     }
   };
@@ -296,7 +339,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {showWelcome && <WelcomeModal onStart={() => setShowWelcome(false)} />}
-
+      
+      {showAdmin ? (
+        <AdminDashboard />
+      ) : (
+        <>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-lg z-50"
@@ -396,6 +443,8 @@ function App() {
 
       {showQuitModal && (
         <ConfirmQuit onConfirm={confirmQuit} onCancel={cancelQuit} />
+      )}
+        </>
       )}
     </div>
   );
