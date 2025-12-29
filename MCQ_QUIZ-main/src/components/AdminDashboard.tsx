@@ -8,6 +8,20 @@ interface VisitData {
   trackedAt: Timestamp;
   userAgent: string;
   referrer: string;
+  deviceInfo?: {
+    deviceType: string;
+    browser: string;
+    os: string;
+    deviceName: string;
+    platform: string;
+    vendor: string;
+    screenResolution: string;
+  };
+  location?: {
+    country: string;
+    city: string;
+    ip: string;
+  } | null;
 }
 
 interface QuizEventData {
@@ -42,6 +56,7 @@ export const AdminDashboard = () => {
     averageQuestionsPerSession: 0,
     deviceBreakdown: { desktop: 0, mobile: 0, tablet: 0 },
     browserBreakdown: {} as Record<string, number>,
+    locationBreakdown: {} as Record<string, number>,
     dailyActivity: [] as { date: string; visits: number; quizzes: number }[],
     hourlyActivity: [] as { hour: number; activity: number }[]
   });
@@ -71,6 +86,7 @@ export const AdminDashboard = () => {
     // Device detection
     const deviceBreakdown = { desktop: 0, mobile: 0, tablet: 0 };
     const browserBreakdown: Record<string, number> = {};
+    const locationBreakdown: Record<string, number> = {};
     
     visitsData.forEach(visit => {
       const ua = visit.userAgent.toLowerCase();
@@ -83,6 +99,14 @@ export const AdminDashboard = () => {
       else if (ua.includes('firefox')) browserBreakdown.Firefox = (browserBreakdown.Firefox || 0) + 1;
       else if (ua.includes('safari')) browserBreakdown.Safari = (browserBreakdown.Safari || 0) + 1;
       else if (ua.includes('edge')) browserBreakdown.Edge = (browserBreakdown.Edge || 0) + 1;
+      
+      // Location breakdown
+      if (visit.location && visit.location.country) {
+        const locationKey = visit.location.city ? `${visit.location.city}, ${visit.location.country}` : visit.location.country;
+        locationBreakdown[locationKey] = (locationBreakdown[locationKey] || 0) + 1;
+      } else {
+        locationBreakdown['Unknown'] = (locationBreakdown['Unknown'] || 0) + 1;
+      }
     });
     
     // Hourly activity analysis
@@ -154,6 +178,7 @@ export const AdminDashboard = () => {
         : 0,
       deviceBreakdown,
       browserBreakdown,
+      locationBreakdown,
       dailyActivity,
       hourlyActivity
     });
@@ -450,6 +475,28 @@ export const AdminDashboard = () => {
                 </div>
               </div>
 
+              {/* Location Breakdown */}
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-semibold mb-4">User Location Breakdown</h3>
+                <div className="space-y-3">
+                  {Object.entries(analytics.locationBreakdown)
+                    .sort(([, a], [, b]) => b - a)
+                    .slice(0, 10)
+                    .map(([location, count]) => (
+                      <div key={location} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <div>
+                          <div className="font-medium">{location}</div>
+                          <div className="text-sm text-gray-500">{count} visitors</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium">{Math.round((count / analytics.totalUsers) * 100)}%</div>
+                          <div className="text-sm text-gray-500">of total</div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
               {/* Unit Performance */}
               <div className="bg-white p-6 rounded-lg border">
                 <h3 className="text-lg font-semibold mb-4">Unit Performance</h3>
@@ -501,13 +548,22 @@ export const AdminDashboard = () => {
                         Visitor ID
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Device
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Browser & OS
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Screen
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Location
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        IP Address
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         First Visit
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Referrer
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        User Agent
                       </th>
                     </tr>
                   </thead>
@@ -518,13 +574,31 @@ export const AdminDashboard = () => {
                           {visit.visitorId}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {visit.firstVisit.toDate().toLocaleString()}
+                          <div>
+                            <div className="font-medium capitalize">{visit.deviceInfo?.deviceType || 'Unknown'}</div>
+                            <div className="text-xs text-gray-400">{visit.deviceInfo?.deviceName || 'Unknown Device'}</div>
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {visit.referrer || 'Direct'}
+                          <div>
+                            <div className="font-medium">{visit.deviceInfo?.browser || 'Unknown'}</div>
+                            <div className="text-xs text-gray-400">{visit.deviceInfo?.os || 'Unknown OS'}</div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                          {visit.userAgent}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {visit.deviceInfo?.screenResolution || 'Unknown'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {visit.location ? 
+                            `${visit.location.city}, ${visit.location.country}` : 
+                            'Unknown'
+                          }
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {visit.location?.ip || 'Unknown'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {visit.firstVisit.toDate().toLocaleString()}
                         </td>
                       </tr>
                     ))}

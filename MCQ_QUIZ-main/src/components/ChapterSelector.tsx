@@ -14,6 +14,7 @@ const UNIT_TITLES: Record<string, string> = {
   'UNIT 3': 'Introduction to Arduino',
   'UNIT 4': 'Interfacing of Input and Output Devices with Arduino',
   'UNIT 5': 'Introduction to Internet of Things – IOT',
+  'Question Solving': 'Mixed Practice Questions',
 };
 
 // Unit descriptions to be shown in the modal
@@ -22,7 +23,8 @@ const UNIT_DESCRIPTIONS: Record<string, string> = {
   'UNIT 2': 'UNIT 2 introduces embedded systems and advanced microcontrollers, focusing on their architecture, components, and applications.',
   'UNIT 3': 'UNIT 3 focuses on Arduino as an open-source development board, covering Arduino basics, types of boards, and programming using the Arduino IDE. ',
   'UNIT 4': 'UNIT 4 focuses on interfacing basic electronic components with Arduino, including LEDs, switches, relays, seven-segment displays, and 16×2 LCDs.',
-  'UNIT 5': 'UNIT 5 introduces the Internet of Things (IoT), covering IoT architecture, components, and communication modules.'
+  'UNIT 5': 'UNIT 5 introduces the Internet of Things (IoT), covering IoT architecture, components, and communication modules.',
+  'Question Solving': 'A mixed collection of practice questions covering all topics from microcontrollers, Arduino programming, interfacing, and IoT concepts.'
 };
 
 export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorProps) => {
@@ -52,7 +54,7 @@ export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorPr
       </div>
 
       <div className="chapters-grid">
-        {['UNIT 1', 'UNIT 2', 'UNIT 3', 'UNIT 4', 'UNIT 5'].map((unit) => {
+        {['UNIT 1', 'UNIT 2', 'UNIT 3', 'UNIT 4', 'UNIT 5', 'Question Solving'].map((unit) => {
           const chapter = chapters.find(c => c.name === unit);
           return (
             <button
