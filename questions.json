@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "chapter": "UNIT 1",
+    "question": "Sample Question 1 for UNIT 1 - Replace with your question",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answerIndex": 0
+  },
+  {
+    "id": 2,
+    "chapter": "UNIT 2",
+    "question": "Sample Question 1 for UNIT 2 - Replace with your question",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answerIndex": 1
+  },
+  {
+    "id": 3,
+    "chapter": "UNIT 3",
+    "question": "Sample Question 1 for UNIT 3 - Replace with your question",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answerIndex": 2
+  },
+  {
+    "id": 4,
+    "chapter": "UNIT 4",
+    "question": "Sample Question 1 for UNIT 4 - Replace with your question",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answerIndex": 3
+  },
+  {
+    "id": 5,
+    "chapter": "UNIT 5",
+    "question": "Sample Question 1 for UNIT 5 - Replace with your question",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answerIndex": 0
+  }
+]
