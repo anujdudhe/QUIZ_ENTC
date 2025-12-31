@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy, limit, Timestamp, deleteDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, Timestamp, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase';
 
 interface VisitData {
@@ -184,7 +184,7 @@ export const AdminDashboard = () => {
   const calculateAverageScore = () => {
     const completedQuizzes = quizEvents?.filter(e => e.eventType === 'quiz_complete' && e.score) || [];
     return completedQuizzes.length > 0 
-      ? Math.round(completedQuizzes.reduce((sum, q) => sum + q.score, 0) / completedQuizzes.length)
+      ? Math.round(completedQuizzes.reduce((sum, q) => sum + (q.score ?? 0), 0) / completedQuizzes.length)
       : 0;
   };
 
@@ -203,7 +203,7 @@ export const AdminDashboard = () => {
         if (!acc[event.unit]) {
           acc[event.unit] = { total: 0, count: 0, attempts: 0 };
         }
-        acc[event.unit].total += event.score;
+        acc[event.unit].total += event.score ?? 0;
         acc[event.unit].count += 1;
         return acc;
       }, {} as Record<string, { total: number; count: number; attempts: number }>) || {};
