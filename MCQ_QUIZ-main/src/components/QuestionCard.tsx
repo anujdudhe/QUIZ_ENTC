@@ -172,6 +172,25 @@ export const QuestionCard = ({
         })}
       </div>
 
+      {/* Feedback message - No spacing on mobile */}
+      {isSubmitted && (
+        <div
+          className={`mb-0 sm:mb-6 p-3 sm:p-4 rounded-lg ${
+            isCorrect ? 'bg-green-100 border border-green-400 text-green-800' : 'bg-red-100 border border-red-400 text-red-800'
+          }`}
+          role="alert"
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-base sm:text-lg">{isCorrect ? '✓ Correct!' : '✗ Wrong!'}</span>
+          </div>
+          {!isCorrect && (
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm">
+              The correct answer is: <strong>{question.options[question.answerIndex]}</strong>
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Action buttons - Sticky on mobile */}
       <div className="flex justify-between gap-2 sm:gap-3 mt-auto pt-2 border-t border-gray-100 sm:border-0 sm:pt-0">
         {/* Previous button (disabled on first question) */}
