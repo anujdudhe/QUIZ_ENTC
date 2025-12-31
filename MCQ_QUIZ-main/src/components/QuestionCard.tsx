@@ -10,6 +10,8 @@ interface QuestionCardProps {
   onPrevious: () => void;
   onSkip: () => void;
   isAnswered: boolean;
+  previousAnswer?: number | null;
+  previousCorrect?: boolean | null;
 }
 
 /**
@@ -25,22 +27,25 @@ export const QuestionCard = ({
   onPrevious,
   onSkip,
   isAnswered,
+  previousAnswer,
+  previousCorrect,
 }: QuestionCardProps) => {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(previousAnswer || null);
+  const [isSubmitted, setIsSubmitted] = useState(isAnswered);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(previousCorrect || null);
 
   // Reset state when question changes
   useEffect(() => {
     if (isAnswered) {
       setIsSubmitted(true);
-      // We do not restore selectedOption / correctness here
+      setSelectedOption(previousAnswer || null);
+      setIsCorrect(previousCorrect || null);
     } else {
-      setSelectedOption(null);
+      setSelectedOption(previousAnswer || null);
       setIsSubmitted(false);
       setIsCorrect(null);
     }
-  }, [question.id, isAnswered]);
+  }, [question.id, isAnswered, previousAnswer, previousCorrect]);
 
   // Keyboard navigation
   useEffect(() => {

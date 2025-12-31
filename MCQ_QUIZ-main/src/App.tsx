@@ -414,6 +414,8 @@ function App() {
                     onPrevious={handlePrevious}
                     onSkip={handleSkip}
                     isAnswered={questionStates[appState.currentQuestionIndex]?.status === 'answered'}
+                    previousAnswer={userAnswers.find(a => a.questionId === filteredQuestions[appState.currentQuestionIndex].id)?.selectedIndex || null}
+                    previousCorrect={userAnswers.find(a => a.questionId === filteredQuestions[appState.currentQuestionIndex].id)?.isCorrect || null}
                   />
                 </>
               ) : (
