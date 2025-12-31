@@ -405,18 +405,34 @@ function App() {
                     })}
                   />
 
-                  <QuestionCard
-                    question={filteredQuestions[appState.currentQuestionIndex]}
-                    questionNumber={appState.currentQuestionIndex + 1}
-                    totalQuestions={filteredQuestions.length}
-                    onSubmitAnswer={handleSubmitAnswer}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    onSkip={handleSkip}
-                    isAnswered={questionStates[appState.currentQuestionIndex]?.status === 'answered'}
-                    previousAnswer={userAnswers.find(a => a.questionId === filteredQuestions[appState.currentQuestionIndex].id)?.selectedIndex || null}
-                    previousCorrect={userAnswers.find(a => a.questionId === filteredQuestions[appState.currentQuestionIndex].id)?.isCorrect || null}
-                  />
+                  {(() => {
+                    const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
+                    const previousAnswer = userAnswers.find(a => a.questionId === currentQuestion?.id)?.selectedIndex || null;
+                    const previousCorrect = userAnswers.find(a => a.questionId === currentQuestion?.id)?.isCorrect || null;
+                    
+                    console.log('App.tsx QuestionCard props:', {
+                      questionId: currentQuestion?.id,
+                      isAnswered: questionStates[appState.currentQuestionIndex]?.status === 'answered',
+                      previousAnswer,
+                      previousCorrect,
+                      userAnswers: userAnswers.length
+                    });
+
+                    return (
+                      <QuestionCard
+                        question={currentQuestion}
+                        questionNumber={appState.currentQuestionIndex + 1}
+                        totalQuestions={filteredQuestions.length}
+                        onSubmitAnswer={handleSubmitAnswer}
+                        onNext={handleNext}
+                        onPrevious={handlePrevious}
+                        onSkip={handleSkip}
+                        isAnswered={questionStates[appState.currentQuestionIndex]?.status === 'answered'}
+                        previousAnswer={previousAnswer}
+                        previousCorrect={previousCorrect}
+                      />
+                    );
+                  })()}
                 </>
               ) : (
                 <div className="text-center py-20">

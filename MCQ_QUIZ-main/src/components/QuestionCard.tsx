@@ -36,6 +36,8 @@ export const QuestionCard = ({
 
   // Reset state when question changes
   useEffect(() => {
+    console.log('QuestionCard useEffect:', { questionId: question.id, isAnswered, previousAnswer, previousCorrect });
+    
     if (isAnswered) {
       setIsSubmitted(true);
       setSelectedOption(previousAnswer || null);
@@ -114,10 +116,17 @@ export const QuestionCard = ({
 
   return (
     <div className="max-w-2xl w-full mx-auto p-4 sm:p-6 bg-white rounded-xl shadow-md overflow-hidden relative flex flex-col min-h-[calc(100vh-200px)] sm:min-h-0">
-      <div className="flex justify-between items-center mb-4 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-          Question {questionNumber} of {totalQuestions}
-        </h2>
+      {!question ? (
+        <div className="text-center py-20">
+          <p className="text-2xl font-bold text-gray-800 mb-4">Question not found</p>
+          <p className="text-gray-600">The requested question could not be loaded.</p>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              Question {questionNumber} of {totalQuestions || 0}
+            </h2>
         <div className="text-sm text-gray-500">
           {isSubmitted && (
             <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -247,6 +256,8 @@ export const QuestionCard = ({
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };
