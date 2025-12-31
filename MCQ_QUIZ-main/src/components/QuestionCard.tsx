@@ -45,13 +45,13 @@ export const QuestionCard = ({
   useEffect(() => {
     console.log('QuestionCard useEffect:', { questionId: question.id, isAnswered, previousAnswer, previousCorrect });
     
-    if (isAnswered && previousAnswer !== null) {
+    if (isAnswered && previousAnswer !== null && previousAnswer !== undefined) {
       // Question was answered before - restore full state
       setIsSubmitted(true);
       setSelectedOption(previousAnswer);
-      setIsCorrect(previousCorrect);
-    } else if (isAnswered && previousAnswer === null) {
-      // Question marked as answered but no previous answer found
+      setIsCorrect(previousCorrect ?? null);
+    } else if (isAnswered) {
+      // Question marked as answered but no previous answer found or previousAnswer is null/undefined
       setIsSubmitted(true);
       setSelectedOption(null);
       setIsCorrect(null);
