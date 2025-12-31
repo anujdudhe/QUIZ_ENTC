@@ -190,12 +190,6 @@ export const QuestionCard = ({
             }
           }
 
-          // TEMP TEST: Force first option to be selected for testing
-          const testSelected = !isSubmitted && index === 0;
-          if (testSelected) {
-            optionClass = 'w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 border-blue-500 bg-blue-50 text-blue-900';
-          }
-
           return (
             <button
               key={index}

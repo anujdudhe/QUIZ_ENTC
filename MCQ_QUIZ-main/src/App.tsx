@@ -136,8 +136,21 @@ function App() {
       correctIndex: currentQuestion.answerIndex,
     };
 
-    // Update answers only (remove questionStates dependency)
+    // Update answers and question states
     setUserAnswers(prev => [...prev, answer]);
+    
+    // Update question state to mark as answered
+    setQuestionStates(prev => {
+      const updated = [...prev];
+      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
+      if (questionIndex !== -1) {
+        updated[questionIndex] = {
+          ...updated[questionIndex],
+          status: 'answered' as const,
+        };
+      }
+      return updated;
+    });
 
     // Only move to results if it's the last question and user clicks next
     const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
