@@ -7,7 +7,7 @@ interface ChapterSelectorProps {
   onSelectChapter: (chapterId: string) => void;
 }
 
-// Short unit titles shown on the chapter cards
+// Short unit titles shown on chapter cards
 const UNIT_TITLES: Record<string, string> = {
   'UNIT 1': 'Microcontroller Fundamentals',
   'UNIT 2': 'Embedded Systems and Advance Microcontrollers',
@@ -17,14 +17,14 @@ const UNIT_TITLES: Record<string, string> = {
   'Question Solving': 'Mixed Practice Questions',
 };
 
-// Unit descriptions to be shown in the modal
+// Unit descriptions to be shown in modal
 const UNIT_DESCRIPTIONS: Record<string, string> = {
-  'UNIT 1': 'Unit 1 introduces the basics of microcomputers and microcontrollers, their architecture, differences, and the role of the 8051 microcontroller in embedded systems.',
+  'UNIT 1': 'Unit 1 introduces the basics of microcomputers and microcontrollers, their architecture, differences, and the role of 8051 microcontroller in embedded systems.',
   'UNIT 2': 'UNIT 2 introduces embedded systems and advanced microcontrollers, focusing on their architecture, components, and applications.',
   'UNIT 3': 'UNIT 3 focuses on Arduino as an open-source development board, covering Arduino basics, types of boards, and programming using the Arduino IDE. ',
   'UNIT 4': 'UNIT 4 focuses on interfacing basic electronic components with Arduino, including LEDs, switches, relays, seven-segment displays, and 16×2 LCDs.',
   'UNIT 5': 'UNIT 5 introduces the Internet of Things (IoT), covering IoT architecture, components, and communication modules.',
-  'Question Solving': 'A mixed collection of practice questions covering all topics from microcontrollers, Arduino programming, interfacing, and IoT concepts.'
+  'Question Solving': 'A mixed collection of practice questions covering all topics from microcontrollers, Arduino programming, interfacing, and IoT concepts.',
 };
 
 export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorProps) => {

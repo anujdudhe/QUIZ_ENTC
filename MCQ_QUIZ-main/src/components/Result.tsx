@@ -36,81 +36,112 @@ export const Result = ({ results, onRestart }: ResultProps) => {
   const performance = getPerformanceMessage();
 
   return (
-    <div className="bg-white rounded-lg shadow-2xl p-6 sm:p-10 w-full max-w-2xl">
+    <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6 md:p-10 w-full max-w-2xl">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+      <div className="text-center mb-4 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
           Exam Completed!
         </h1>
-        <p className={`text-2xl font-semibold ${performance.color}`}>
+        <p className={`text-lg sm:text-xl md:text-2xl font-semibold ${performance.color}`}>
           {performance.text}
         </p>
       </div>
 
-      {/* Score display */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 sm:p-8 mb-6">
-        <div className="text-center mb-6">
-          <div className="text-6xl sm:text-7xl font-bold text-blue-600 mb-2">
-            {percentage.toFixed(1)}%
+      {/* Score display - Compact on mobile */}
+      <div className="relative mb-4 sm:mb-8">
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl blur opacity-25"></div>
+        <div className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-xl border border-white/50 backdrop-blur-sm">
+          <div className="text-center mb-4 sm:mb-8">
+            <div className="relative inline-block">
+              <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur-lg sm:blur-xl opacity-30 animate-pulse"></div>
+              <div className="relative text-4xl sm:text-6xl md:text-8xl font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                {percentage.toFixed(1)}%
+              </div>
+            </div>
+            <div className="text-base sm:text-lg md:text-xl font-semibold text-gray-700 mt-2 sm:mt-4 uppercase tracking-wide">Your Score</div>
           </div>
-          <div className="text-gray-600 font-medium">Your Score</div>
-        </div>
 
-        {/* Statistics grid */}
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div className="bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-800">
-              {totalQuestions}
+          {/* Statistics grid - Responsive */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6">
+            <div className="group relative">
+              <div className="absolute -inset-0.5 sm:-inset-1 bg-gradient-to-r from-gray-400 to-gray-600 rounded-xl sm:rounded-2xl blur opacity-0 group-hover:opacity-25 transition duration-300"></div>
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 sm:p-4 md:p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl sm:text-3xl md:text-4xl font-black text-gray-800 group-hover:text-gray-900 transition-colors">
+                  {totalQuestions}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 font-medium uppercase tracking-wide">Total</div>
+              </div>
             </div>
-            <div className="text-xs sm:text-sm text-gray-600 mt-1">Total</div>
+            
+            <div className="group relative">
+              <div className="absolute -inset-0.5 sm:-inset-1 bg-gradient-to-r from-emerald-400 to-green-600 rounded-xl sm:rounded-2xl blur opacity-0 group-hover:opacity-25 transition duration-300"></div>
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 sm:p-4 md:p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl sm:text-3xl md:text-4xl font-black text-emerald-600 group-hover:text-emerald-700 transition-colors">
+                  {correctAnswers}
+                </div>
+                <div className="text-xs sm:text-sm text-emerald-600 mt-1 sm:mt-2 font-medium uppercase tracking-wide">Correct</div>
+              </div>
+            </div>
+            
+            <div className="group relative">
+              <div className="absolute -inset-0.5 sm:-inset-1 bg-gradient-to-r from-rose-400 to-red-600 rounded-xl sm:rounded-2xl blur opacity-0 group-hover:opacity-25 transition duration-300"></div>
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 sm:p-4 md:p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl sm:text-3xl md:text-4xl font-black text-rose-600 group-hover:text-rose-700 transition-colors">
+                  {wrongAnswers}
+                </div>
+                <div className="text-xs sm:text-sm text-rose-600 mt-1 sm:mt-2 font-medium uppercase tracking-wide">Wrong</div>
+              </div>
+            </div>
           </div>
           
-          <div className="bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl sm:text-3xl font-bold text-green-600">
-              {correctAnswers}
+          {/* Performance indicator - Compact */}
+          <div className="mt-4 sm:mt-8 text-center">
+            <div className="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
+              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2 sm:mr-3 animate-pulse ${
+                percentage >= 75 ? 'bg-emerald-500' : 
+                percentage >= 60 ? 'bg-amber-500' : 
+                percentage >= 40 ? 'bg-orange-500' : 'bg-red-500'
+              }`}></div>
+              <span className={`text-sm sm:text-base font-semibold ${
+                percentage >= 75 ? 'text-emerald-700' : 
+                percentage >= 60 ? 'text-amber-700' : 
+                percentage >= 40 ? 'text-orange-700' : 'text-red-700'
+              }`}>
+                {performance.text}
+              </span>
             </div>
-            <div className="text-xs sm:text-sm text-gray-600 mt-1">Correct</div>
-          </div>
-          
-          <div className="bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl sm:text-3xl font-bold text-red-600">
-              {wrongAnswers}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600 mt-1">Wrong</div>
           </div>
         </div>
       </div>
 
-      {/* Completion time */}
-      <div className="text-center text-sm text-gray-500 mb-6">
+      {/* Completion time - Compact */}
+      <div className="text-center text-xs sm:text-sm text-gray-500 mb-3 sm:mb-6">
         Completed on: {new Date(results.completedAt).toLocaleString()}
       </div>
 
-      {/* Action buttons */}
-      <div className="space-y-3">
+      {/* Action buttons - Compact on mobile */}
+      <div className="space-y-2 sm:space-y-3">
         <button
           onClick={onRestart}
-          className="w-full px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           aria-label="Restart the exam"
         >
           🔄 Restart Exam
         </button>
 
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <button
             onClick={handleDownloadResults}
-            className=" w-full px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             aria-label="Download results as JSON"
           >
             📥 Download Results
           </button>
-
-          
         </div>
       </div>
 
-      {/* Footer note */}
-      <div className="mt-6 text-center text-sm text-gray-500">
+      {/* Footer note - Compact */}
+      <div className="mt-3 sm:mt-6 text-center text-xs sm:text-sm text-gray-500">
         Made with ❤️ by <span className="font-semibold">ANUJ DUDHE</span>
       </div>
     </div>

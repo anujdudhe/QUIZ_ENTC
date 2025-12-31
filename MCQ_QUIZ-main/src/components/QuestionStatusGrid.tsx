@@ -91,19 +91,52 @@ export const QuestionStatusGrid = ({
       </div>
 
       {/* Summary Stats */}
-      <div className="mt-4 pt-3 border-t border-gray-200/50 flex flex-wrap gap-4 text-sm text-slate-700">
-        <span>
-          <strong>Total:</strong> {questionStates.length}
-        </span>
-        <span>
-          <strong>Correct:</strong> {userAnswers.filter(a => a.isCorrect).length}
-        </span>
-        <span>
-          <strong>Wrong:</strong> {userAnswers.filter(a => !a.isCorrect && !a.isSkipped).length}
-        </span>
-        <span>
-          <strong>Skipped:</strong> {userAnswers.filter(a => a.isSkipped).length}
-        </span>
+      <div className="mt-6 pt-4 border-t border-gray-200/50">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-3 text-center group hover:shadow-md transition-all duration-200">
+            <div className="text-2xl font-bold text-gray-800 group-hover:text-gray-900 transition-colors">
+              {questionStates.length}
+            </div>
+            <div className="text-xs text-gray-600 font-medium uppercase tracking-wide">Total</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg p-3 text-center group hover:shadow-md transition-all duration-200">
+            <div className="text-2xl font-bold text-emerald-600 group-hover:text-emerald-700 transition-colors">
+              {userAnswers.filter(a => a.isCorrect).length}
+            </div>
+            <div className="text-xs text-emerald-600 font-medium uppercase tracking-wide">Correct</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-lg p-3 text-center group hover:shadow-md transition-all duration-200">
+            <div className="text-2xl font-bold text-rose-600 group-hover:text-rose-700 transition-colors">
+              {userAnswers.filter(a => !a.isCorrect && !a.isSkipped).length}
+            </div>
+            <div className="text-xs text-rose-600 font-medium uppercase tracking-wide">Wrong</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-3 text-center group hover:shadow-md transition-all duration-200">
+            <div className="text-2xl font-bold text-amber-600 group-hover:text-amber-700 transition-colors">
+              {userAnswers.filter(a => a.isSkipped).length}
+            </div>
+            <div className="text-xs text-amber-600 font-medium uppercase tracking-wide">Skipped</div>
+          </div>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="mt-4">
+          <div className="flex justify-between text-xs text-gray-600 mb-2">
+            <span>Progress</span>
+            <span className="font-medium">
+              {Math.round((userAnswers.filter(a => a.isCorrect || !a.isSkipped).length / questionStates.length) * 100)}%
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(userAnswers.filter(a => a.isCorrect || !a.isSkipped).length / questionStates.length) * 100}%` }}
+            ></div>
+          </div>
+        </div>
       </div>
     </div>
   );

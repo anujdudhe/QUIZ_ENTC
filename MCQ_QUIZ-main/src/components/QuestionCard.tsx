@@ -108,29 +108,29 @@ export const QuestionCard = ({
   };
 
   return (
-    <div className="max-w-2xl w-full mx-auto p-6 bg-white rounded-xl shadow-md overflow-hidden relative">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">
+    <div className="max-w-2xl w-full mx-auto p-4 sm:p-6 bg-white rounded-xl shadow-md overflow-hidden relative flex flex-col min-h-[calc(100vh-200px)] sm:min-h-0">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
           Question {questionNumber} of {totalQuestions}
         </h2>
         <div className="text-sm text-gray-500">
           {isSubmitted && (
-            <span className={`px-3 py-1 rounded-full ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
               {isCorrect ? 'Correct!' : 'Incorrect'}
             </span>
           )}
         </div>
       </div>
 
-      <h3 className="text-lg font-medium text-gray-800 mb-4">{question.question}</h3>
+      <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-3 sm:mb-4">{question.question}</h3>
 
       {/* Options */}
-      <div className="space-y-3 mb-6">
+      <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 flex-1">
         {question.options.map((option, index) => {
           const isSelected = selectedOption === index;
           const isCorrectOption = index === question.answerIndex;
 
-          let optionClass = 'w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ';
+          let optionClass = 'w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 ';
 
           if (!isSubmitted) {
             optionClass += isSelected
@@ -156,10 +156,10 @@ export const QuestionCard = ({
               aria-pressed={isSelected}
             >
               <div className="flex items-start gap-3">
-                <span className="font-bold text-lg flex-shrink-0">
+                <span className="font-bold text-base sm:text-lg flex-shrink-0">
                   {String.fromCharCode(65 + index)}.
                 </span>
-                <span className="flex-1 text-left">{option}</span>
+                <span className="flex-1 text-left text-sm sm:text-base">{option}</span>
                 {isSubmitted && isCorrectOption && (
                   <span className="text-green-600 font-bold" aria-label="Correct answer">✓</span>
                 )}
@@ -172,32 +172,32 @@ export const QuestionCard = ({
         })}
       </div>
 
-      {/* Feedback message */}
+      {/* Feedback message - Compact on mobile */}
       {isSubmitted && (
         <div
-          className={`mb-6 p-4 rounded-lg ${
+          className={`mb-3 sm:mb-6 p-3 sm:p-4 rounded-lg ${
             isCorrect ? 'bg-green-100 border border-green-400 text-green-800' : 'bg-red-100 border border-red-400 text-red-800'
           }`}
           role="alert"
         >
           <div className="flex items-center gap-2">
-            <span className="font-bold text-lg">{isCorrect ? '✓ Correct!' : '✗ Wrong!'}</span>
+            <span className="font-bold text-base sm:text-lg">{isCorrect ? '✓ Correct!' : '✗ Wrong!'}</span>
           </div>
           {!isCorrect && (
-            <p className="mt-2 text-sm">
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm">
               The correct answer is: <strong>{question.options[question.answerIndex]}</strong>
             </p>
           )}
         </div>
       )}
 
-      {/* Action buttons */}
-      <div className="flex justify-between gap-3">
+      {/* Action buttons - Sticky on mobile */}
+      <div className="flex justify-between gap-2 sm:gap-3 mt-auto pt-2 border-t border-gray-100 sm:border-0 sm:pt-0">
         {/* Previous button (disabled on first question) */}
         <button
           onClick={onPrevious}
           disabled={questionNumber <= 1}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+          className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all text-sm sm:text-base ${
             questionNumber <= 1
               ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300'
@@ -207,12 +207,12 @@ export const QuestionCard = ({
           ← Previous
         </button>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           {/* Skip button (only show when not submitted and no option selected) */}
           {!isSubmitted && (
             <button
               onClick={onSkip}
-              className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+              className="px-3 sm:px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 text-sm sm:text-base"
               aria-label="Skip question"
             >
               Skip
@@ -223,7 +223,7 @@ export const QuestionCard = ({
           {!isSubmitted && selectedOption !== null && (
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
               aria-label="Submit answer"
             >
               Submit
@@ -234,7 +234,7 @@ export const QuestionCard = ({
           {isSubmitted && (
             <button
               onClick={onNext}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
               aria-label={questionNumber === totalQuestions ? 'Finish quiz' : 'Next question'}
             >
               {questionNumber === totalQuestions ? 'Finish' : 'Next'}
