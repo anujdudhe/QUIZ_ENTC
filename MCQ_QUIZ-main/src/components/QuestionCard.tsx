@@ -37,9 +37,9 @@ export const QuestionCard = ({
     previousCorrect 
   });
   
-  const [selectedOption, setSelectedOption] = useState<number | null>(previousAnswer || null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(previousAnswer ?? null);
   const [isSubmitted, setIsSubmitted] = useState(isAnswered);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(previousCorrect || null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(previousCorrect ?? null);
 
   // Reset state when question changes
   useEffect(() => {
