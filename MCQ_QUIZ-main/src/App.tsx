@@ -136,20 +136,8 @@ function App() {
       correctIndex: currentQuestion.answerIndex,
     };
 
-    // Update answers and question state
+    // Update answers only (remove questionStates dependency)
     setUserAnswers(prev => [...prev, answer]);
-
-    setQuestionStates(prev => {
-      const updated = [...prev];
-      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
-      if (questionIndex !== -1) {
-        updated[questionIndex] = {
-          questionId: currentQuestion.id,
-          status: 'answered',
-        };
-      }
-      return updated;
-    });
 
     // Only move to results if it's the last question and user clicks next
     const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
@@ -407,15 +395,19 @@ function App() {
 
                   {(() => {
                     const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
-                    const previousAnswer = userAnswers.find(a => a.questionId === currentQuestion?.id)?.selectedIndex || null;
-                    const previousCorrect = userAnswers.find(a => a.questionId === currentQuestion?.id)?.isCorrect || null;
+                    const foundAnswer = userAnswers.find(a => a.questionId === currentQuestion?.id);
+                    const previousAnswer = foundAnswer?.selectedIndex || null;
+                    const previousCorrect = foundAnswer?.isCorrect || null;
+                    const isAnswered = userAnswers.some(a => a.questionId === currentQuestion?.id);
                     
                     console.log('App.tsx QuestionCard props:', {
                       questionId: currentQuestion?.id,
-                      isAnswered: questionStates[appState.currentQuestionIndex]?.status === 'answered',
+                      isAnswered,
                       previousAnswer,
                       previousCorrect,
-                      userAnswers: userAnswers.length
+                      foundAnswer,
+                      userAnswers: userAnswers.length,
+                      allUserAnswers: userAnswers.map(a => ({ questionId: a.questionId, selectedIndex: a.selectedIndex }))
                     });
 
                     return (
@@ -427,7 +419,7 @@ function App() {
                         onNext={handleNext}
                         onPrevious={handlePrevious}
                         onSkip={handleSkip}
-                        isAnswered={questionStates[appState.currentQuestionIndex]?.status === 'answered'}
+                        isAnswered={isAnswered}
                         previousAnswer={previousAnswer}
                         previousCorrect={previousCorrect}
                       />

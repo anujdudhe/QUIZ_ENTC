@@ -30,6 +30,13 @@ export const QuestionCard = ({
   previousAnswer,
   previousCorrect,
 }: QuestionCardProps) => {
+  console.log('QuestionCard initial render:', { 
+    questionId: question?.id, 
+    isAnswered, 
+    previousAnswer, 
+    previousCorrect 
+  });
+  
   const [selectedOption, setSelectedOption] = useState<number | null>(previousAnswer || null);
   const [isSubmitted, setIsSubmitted] = useState(isAnswered);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(previousCorrect || null);
@@ -38,12 +45,19 @@ export const QuestionCard = ({
   useEffect(() => {
     console.log('QuestionCard useEffect:', { questionId: question.id, isAnswered, previousAnswer, previousCorrect });
     
-    if (isAnswered) {
+    if (isAnswered && previousAnswer !== null) {
+      // Question was answered before - restore full state
       setIsSubmitted(true);
-      setSelectedOption(previousAnswer || null);
-      setIsCorrect(previousCorrect || null);
+      setSelectedOption(previousAnswer);
+      setIsCorrect(previousCorrect);
+    } else if (isAnswered && previousAnswer === null) {
+      // Question marked as answered but no previous answer found
+      setIsSubmitted(true);
+      setSelectedOption(null);
+      setIsCorrect(null);
     } else {
-      setSelectedOption(previousAnswer || null);
+      // New question - reset everything
+      setSelectedOption(null);
       setIsSubmitted(false);
       setIsCorrect(null);
     }
@@ -106,9 +120,16 @@ export const QuestionCard = ({
   }, [selectedOption, isSubmitted, question.options.length, onNext, onPrevious, onSkip]);
 
   const handleSubmit = () => {
-    if (selectedOption === null || isSubmitted) return;
+    console.log('handleSubmit called:', { selectedOption, isSubmitted, questionId: question.id });
+    
+    if (selectedOption === null || isSubmitted) {
+      console.log('handleSubmit blocked:', { selectedOption, isSubmitted });
+      return;
+    }
 
     const correct = selectedOption === question.answerIndex;
+    console.log('handleSubmit proceeding:', { selectedOption, correct, answerIndex: question.answerIndex });
+    
     setIsCorrect(correct);
     setIsSubmitted(true);
     onSubmitAnswer(selectedOption, correct);
@@ -144,6 +165,15 @@ export const QuestionCard = ({
           const isSelected = selectedOption === index;
           const isCorrectOption = index === question.answerIndex;
 
+          console.log('Option rendering:', { 
+            index, 
+            isSelected, 
+            selectedOption, 
+            isCorrectOption, 
+            isSubmitted,
+            questionId: question.id 
+          });
+
           let optionClass = 'w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 ';
 
           if (!isSubmitted) {
@@ -158,6 +188,12 @@ export const QuestionCard = ({
             } else {
               optionClass += 'border-gray-300 bg-gray-50 text-gray-600';
             }
+          }
+
+          // TEMP TEST: Force first option to be selected for testing
+          const testSelected = !isSubmitted && index === 0;
+          if (testSelected) {
+            optionClass = 'w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 border-blue-500 bg-blue-50 text-blue-900';
           }
 
           return (
@@ -237,7 +273,8 @@ export const QuestionCard = ({
           {!isSubmitted && selectedOption !== null && (
             <button
               onClick={handleSubmit}
-              className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
+              disabled={isSubmitted}
+              className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Submit answer"
             >
               Submit
