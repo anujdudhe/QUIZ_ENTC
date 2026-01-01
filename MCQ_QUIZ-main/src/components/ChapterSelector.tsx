@@ -15,16 +15,24 @@ const UNIT_TITLES: Record<string, string> = {
   'UNIT 4': 'Interfacing of Input and Output Devices with Arduino',
   'UNIT 5': 'Introduction to Internet of Things – IOT',
   'Question Solving': 'Mixed Practice Questions',
+  'BANK 1': 'Question Bank - SET 1',
+  'BANK 2': 'Question Bank - SET 2',
+  'BANK 3': 'Question Bank - SET 3',
+  'BANK 4': 'Question Bank - SET 4'
 };
 
 // Unit descriptions to be shown in modal
 const UNIT_DESCRIPTIONS: Record<string, string> = {
   'UNIT 1': 'Unit 1 introduces the basics of microcomputers and microcontrollers, their architecture, differences, and the role of 8051 microcontroller in embedded systems.',
   'UNIT 2': 'UNIT 2 introduces embedded systems and advanced microcontrollers, focusing on their architecture, components, and applications.',
-  'UNIT 3': 'UNIT 3 focuses on Arduino as an open-source development board, covering Arduino basics, types of boards, and programming using the Arduino IDE. ',
+  'UNIT 3': 'UNIT 3 focuses on Arduino as an open-source development board, covering Arduino basics, types of boards, and programming using the Arduino IDE.',
   'UNIT 4': 'UNIT 4 focuses on interfacing basic electronic components with Arduino, including LEDs, switches, relays, seven-segment displays, and 16×2 LCDs.',
   'UNIT 5': 'UNIT 5 introduces the Internet of Things (IoT), covering IoT architecture, components, and communication modules.',
   'Question Solving': 'A mixed collection of practice questions covering all topics from microcontrollers, Arduino programming, interfacing, and IoT concepts.',
+  'BANK 1': 'Comprehensive question bank covering all units with a focus on fundamental concepts and applications.',
+  'BANK 2': 'Comprehensive question bank covering all units with a focus on additional practice questions.',
+  'BANK 3': 'Comprehensive question bank covering all units with a focus on advanced concepts and applications.',
+  'BANK 4': 'Comprehensive question bank covering all units with a focus on advanced concepts and applications.'
 };
 
 export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorProps) => {
@@ -53,8 +61,38 @@ export const ChapterSelector = ({ chapters, onSelectChapter }: ChapterSelectorPr
         </p>
       </div>
 
+      <h2 className="text-2xl font-bold text-white mt-8 mb-4">Course Units</h2>
       <div className="chapters-grid">
         {['UNIT 1', 'UNIT 2', 'UNIT 3', 'UNIT 4', 'UNIT 5', 'Question Solving'].map((unit) => {
+          const chapter = chapters.find(c => c.name === unit);
+          return (
+            <button
+              key={unit}
+              className="chapter-card hover:shadow-lg transition-shadow duration-200"
+              onClick={() => handleUnitClick(unit)}
+            >
+              <div className="chapter-number text-2xl font-bold">
+                {unit}
+              </div>
+              {UNIT_TITLES[unit] && (
+                <p className="chapter-title text-sm font-semibold text-gray-800 mt-1">
+                  {UNIT_TITLES[unit]}
+                </p>
+              )}
+              {chapter?.description && (
+                <p className="chapter-description">{chapter.description}</p>
+              )}
+              {!chapter && (
+                <p className="chapter-description">0 questions</p>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <h2 className="text-2xl font-bold text-white mt-12 mb-4">Question Banks</h2>
+      <div className="chapters-grid">
+        {['BANK 1', 'BANK 2', 'BANK 3', 'BANK 4'].map((unit) => {
           const chapter = chapters.find(c => c.name === unit);
           return (
             <button
