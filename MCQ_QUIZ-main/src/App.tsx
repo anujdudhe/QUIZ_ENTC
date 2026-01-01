@@ -129,12 +129,13 @@ function App() {
 
     const filteredQuestions = questions.filter(q => q.chapter === appState.chapter);
     const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
-    const answer: UserAnswer = {
+    const answer = {
       questionId: currentQuestion.id,
       selectedIndex,
       isCorrect,
       correctIndex: currentQuestion.answerIndex,
-    };
+      chapter: currentQuestion.chapter, // store chapter to avoid ambiguity for duplicate ids
+    } as UserAnswer;
 
     // Update answers and question states
     setUserAnswers(prev => [...prev, answer]);
@@ -142,7 +143,8 @@ function App() {
     // Update question state to mark as answered
     setQuestionStates(prev => {
       const updated = [...prev];
-      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
+      // Match by both id and chapter to avoid collisions across different banks/units
+      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id && q.chapter === currentQuestion.chapter);
       if (questionIndex !== -1) {
         updated[questionIndex] = {
           ...updated[questionIndex],
@@ -155,7 +157,7 @@ function App() {
     // Only move to results if it's the last question and user clicks next
     const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
     if (isLastQuestion) {
-      const correctAnswers = [...userAnswers, answer].filter(a => a.isCorrect).length;
+      const correctAnswers = [...userAnswers, answer].filter(a => a.isCorrect && (a as any).chapter === appState.chapter).length;
       const totalQuestions = filteredQuestions.length;
       const results: ExamResults = {
         totalQuestions,
@@ -189,7 +191,8 @@ function App() {
     // Mark the current question as skipped
     setQuestionStates(prev => {
       const updated = [...prev];
-      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id);
+      // Match by both id and chapter to avoid collisions across different banks/units
+      const questionIndex = questions.findIndex(q => q.id === currentQuestion.id && q.chapter === currentQuestion.chapter);
       if (questionIndex !== -1) {
         updated[questionIndex] = {
           ...updated[questionIndex],
@@ -240,7 +243,7 @@ function App() {
     if (appState.stage === 'exam') {
       const examState = appState;
       const filteredQuestions = questions.filter(q => q.chapter === examState.chapter);
-      const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
+      const correctAnswers = userAnswers.filter(a => a.isCorrect && a.chapter === examState.chapter).length;
       const totalQuestions = filteredQuestions.length;
       const results: ExamResults = {
         totalQuestions,
@@ -289,8 +292,11 @@ function App() {
   };
 
   const getResults = (): ExamResults => {
-    const correctAnswers = userAnswers.filter(a => a.isCorrect).length;
-    const totalQuestions = userAnswers.length;
+    const chapter = appState.stage === 'exam' || appState.stage === 'result' ? (appState as any).chapter : '';
+    const filteredAnswers = chapter ? userAnswers.filter(a => (a as any).chapter === chapter) : userAnswers;
+
+    const correctAnswers = filteredAnswers.filter(a => a.isCorrect).length;
+    const totalQuestions = filteredAnswers.length;
     const wrongAnswers = totalQuestions - correctAnswers;
     const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 
@@ -299,7 +305,7 @@ function App() {
       correctAnswers,
       wrongAnswers,
       score: percentage,
-      chapter: appState.stage === 'exam' ? (appState as any).chapter : '',
+      chapter: chapter || '',
       percentage,
       completedAt: Date.now()
     };
@@ -333,8 +339,8 @@ function App() {
     );
   }
 
-  const correctCount = userAnswers.filter(a => a.isCorrect).length;
-  const wrongCount = userAnswers.filter(a => !a.isCorrect).length;
+  const correctCount = userAnswers.filter(a => a.isCorrect && (a as any).chapter === (appState as any).chapter).length;
+  const wrongCount = userAnswers.filter(a => !a.isCorrect && (a as any).chapter === (appState as any).chapter).length;
   const filteredQuestions = getFilteredQuestions();
 
   return (
@@ -400,18 +406,15 @@ function App() {
                         currentQuestionIndex: index
                       }));
                     }}
-                    userAnswers={userAnswers.filter(answer => {
-                      const question = questions.find(q => q.id === answer.questionId);
-                      return question?.chapter === appState.chapter;
-                    })}
+                    userAnswers={userAnswers.filter(answer => (answer as any).chapter === appState.chapter)}
                   />
 
                   {(() => {
                     const currentQuestion = filteredQuestions[appState.currentQuestionIndex];
-                    const foundAnswer = userAnswers.find(a => a.questionId === currentQuestion?.id);
+                    const foundAnswer = userAnswers.find(a => a.questionId === currentQuestion?.id && (a as any).chapter === currentQuestion?.chapter);
                     const previousAnswer = foundAnswer?.selectedIndex || null;
                     const previousCorrect = foundAnswer?.isCorrect || null;
-                    const isAnswered = userAnswers.some(a => a.questionId === currentQuestion?.id);
+                    const isAnswered = userAnswers.some(a => a.questionId === currentQuestion?.id && (a as any).chapter === currentQuestion?.chapter);
                     
                     console.log('App.tsx QuestionCard props:', {
                       questionId: currentQuestion?.id,

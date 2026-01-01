@@ -15,7 +15,8 @@ export interface UserAnswer {
   selectedIndex: number;
   isCorrect: boolean;
   correctIndex: number;
-}
+  chapter: string; // Added to correctly associate answers with a chapter/bank
+} 
 
 export type QuestionStatus = 'unanswered' | 'answered' | 'skipped';
 

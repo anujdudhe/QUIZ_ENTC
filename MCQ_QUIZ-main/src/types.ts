@@ -12,6 +12,7 @@ export interface UserAnswer {
   isCorrect: boolean;
   correctIndex: number;
   isSkipped?: boolean; // Flag to indicate if the question was skipped
+  chapter: string; // Associate answer with chapter/bank to avoid ambiguity when ids repeat
 }
 
 export interface QuestionState {
