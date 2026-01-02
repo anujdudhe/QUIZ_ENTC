@@ -35,6 +35,7 @@ export interface ExamResults {
   chapter: string;
   percentage: number;
   completedAt: number;
+  answers?: UserAnswer[];
 }
 
 export type AppState = 
@@ -49,4 +50,8 @@ export type AppState =
   | { 
       stage: 'result'; 
       results: ExamResults;
+    }
+  | {
+      stage: 'analysis';
+      chapter: string;
     };

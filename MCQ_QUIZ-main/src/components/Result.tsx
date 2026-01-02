@@ -3,26 +3,16 @@ import { ExamResults } from '../types';
 interface ResultProps {
   results: ExamResults;
   onRestart: () => void;
+  onShowAnalysis: () => void;
 }
 
 /**
  * Final results screen showing score and download options
  */
-export const Result = ({ results, onRestart }: ResultProps) => {
+export const Result = ({ results, onRestart, onShowAnalysis }: ResultProps) => {
   const { totalQuestions, correctAnswers, wrongAnswers, percentage } = results;
 
-  const handleDownloadResults = () => {
-    const dataStr = JSON.stringify(results, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `exam-results-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
+  // Download removed — analysis opens on a separate page now.
 
   // Determine performance level
   const getPerformanceMessage = () => {
@@ -36,7 +26,7 @@ export const Result = ({ results, onRestart }: ResultProps) => {
   const performance = getPerformanceMessage();
 
   return (
-    <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6 md:p-10 w-full max-w-2xl">
+    <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6 md:p-10 w-full max-w-6xl min-h-[70vh]">
       {/* Header */}
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
@@ -131,14 +121,15 @@ export const Result = ({ results, onRestart }: ResultProps) => {
 
         <div className="space-y-2 sm:space-y-3">
           <button
-            onClick={handleDownloadResults}
-            className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            aria-label="Download results as JSON"
+            onClick={onShowAnalysis}
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            aria-label="Show question analysis"
           >
-            📥 Download Results
+            🔍 Ques Analysis
           </button>
         </div>
       </div>
+      {/* Analysis now opens on a separate page */}
 
       {/* Footer note - Compact */}
       <div className="mt-3 sm:mt-6 text-center text-xs sm:text-sm text-gray-500">

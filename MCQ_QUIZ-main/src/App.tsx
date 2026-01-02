@@ -10,6 +10,7 @@ import { QuestionStatusGrid } from './components/QuestionStatusGrid';
 import { WelcomeModal } from './components/WelcomeModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { initializeAnalytics, trackQuizStart, trackQuizCompletion } from './services/analytics';
+import QuestionAnalysis from './components/QuestionAnalysis';
 
 /**
  * Main App Component
@@ -138,7 +139,8 @@ function App() {
     } as UserAnswer;
 
     // Update answers and question states
-    setUserAnswers(prev => [...prev, answer]);
+    const newUserAnswers = [...userAnswers, answer];
+    setUserAnswers(newUserAnswers);
     
     // Update question state to mark as answered
     setQuestionStates(prev => {
@@ -157,8 +159,9 @@ function App() {
     // Only move to results if it's the last question and user clicks next
     const isLastQuestion = appState.currentQuestionIndex === filteredQuestions.length - 1;
     if (isLastQuestion) {
-      const correctAnswers = [...userAnswers, answer].filter(a => a.isCorrect && (a as any).chapter === appState.chapter).length;
+      const correctAnswers = newUserAnswers.filter(a => a.isCorrect && (a as any).chapter === appState.chapter).length;
       const totalQuestions = filteredQuestions.length;
+      const answersForChapter = newUserAnswers.filter(a => (a as any).chapter === appState.chapter);
       const results: ExamResults = {
         totalQuestions,
         correctAnswers,
@@ -166,7 +169,8 @@ function App() {
         score: Math.round((correctAnswers / totalQuestions) * 100),
         chapter: appState.chapter,
         percentage: Math.round((correctAnswers / totalQuestions) * 100),
-        completedAt: Date.now()
+        completedAt: Date.now(),
+        answers: answersForChapter
       };
       
       // Track quiz completion
@@ -243,7 +247,8 @@ function App() {
     if (appState.stage === 'exam') {
       const examState = appState;
       const filteredQuestions = questions.filter(q => q.chapter === examState.chapter);
-      const correctAnswers = userAnswers.filter(a => a.isCorrect && a.chapter === examState.chapter).length;
+      const filteredAnswers = userAnswers.filter(a => a.chapter === examState.chapter);
+      const correctAnswers = filteredAnswers.filter(a => a.isCorrect).length;
       const totalQuestions = filteredQuestions.length;
       const results: ExamResults = {
         totalQuestions,
@@ -252,7 +257,8 @@ function App() {
         score: Math.round((correctAnswers / totalQuestions) * 100),
         chapter: examState.chapter,
         percentage: Math.round((correctAnswers / totalQuestions) * 100),
-        completedAt: Date.now()
+        completedAt: Date.now(),
+        answers: filteredAnswers
       };
       
       // Track quiz completion
@@ -296,10 +302,11 @@ function App() {
     const filteredAnswers = chapter ? userAnswers.filter(a => (a as any).chapter === chapter) : userAnswers;
 
     const correctAnswers = filteredAnswers.filter(a => a.isCorrect).length;
-    const totalQuestions = filteredAnswers.length;
+    const totalQuestions = chapter ? questions.filter(q => q.chapter === chapter).length : filteredAnswers.length;
     const wrongAnswers = totalQuestions - correctAnswers;
     const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 
+    const answers = filteredAnswers;
     return {
       totalQuestions,
       correctAnswers,
@@ -307,7 +314,26 @@ function App() {
       score: percentage,
       chapter: chapter || '',
       percentage,
-      completedAt: Date.now()
+      completedAt: Date.now(),
+      answers
+    };
+  };
+
+  const computeResultsForChapter = (chapter: string): ExamResults => {
+    const filteredAnswers = userAnswers.filter(a => (a as any).chapter === chapter);
+    const correctAnswers = filteredAnswers.filter(a => a.isCorrect).length;
+    const totalQuestions = questions.filter(q => q.chapter === chapter).length;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+    return {
+      totalQuestions,
+      correctAnswers,
+      wrongAnswers,
+      score: percentage,
+      chapter,
+      percentage,
+      completedAt: Date.now(),
+      answers: filteredAnswers
     };
   };
 
@@ -462,8 +488,36 @@ function App() {
       {appState.stage === 'result' && (
         <div className="min-h-screen flex items-center justify-center p-4">
           <main id="main-content">
-            <Result results={getResults()} onRestart={handleRestart} />
+            {(() => {
+              const resultsObj = (appState as any).results || getResults();
+              const chapter = (resultsObj as any).chapter || '';
+              return (
+                <Result
+                  results={resultsObj}
+                  onRestart={handleRestart}
+                  onShowAnalysis={() => setAppState({ stage: 'analysis', chapter })}
+                />
+              );
+            })()}
           </main>
+        </div>
+      )}
+
+      {appState.stage === 'analysis' && (
+        <div className="min-h-screen">
+          {(() => {
+            const chapter = (appState as any).chapter || '';
+            const resultsObj = (appState as any).results || computeResultsForChapter(chapter);
+            const answersForChapter = (resultsObj as any).answers || userAnswers.filter(a => (a as any).chapter === chapter);
+            const questionsForChapter = questions.filter(q => q.chapter === chapter);
+            return (
+              <QuestionAnalysis
+                questions={questionsForChapter}
+                answers={answersForChapter}
+                onBack={() => setAppState({ stage: 'result', results: computeResultsForChapter(chapter) })}
+              />
+            );
+          })()}
         </div>
       )}
 
